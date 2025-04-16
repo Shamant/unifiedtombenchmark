@@ -1,29 +1,28 @@
-# SimToM: Theory of Mind Benchmark Testing
+# UniToMBench: A Unified Benchmark for Theory of Mind in Large Language Models
 
 ## Overview
 
-SimToM is a framework for testing Language Models (LLMs) on Theory of Mind (ToM) tasks. Theory of Mind refers to the ability to attribute mental states—beliefs, intents, desires, emotions, knowledge—to oneself and others, and to understand that others have beliefs, desires, intentions, and perspectives that are different from one's own.
+**UniToMBench** is a unified evaluation framework for assessing the **Theory of Mind (ToM)** capabilities of large language models (LLMs). ToM refers to the ability to attribute mental states—beliefs, intents, desires, emotions, and knowledge—to oneself and others, and to reason about perspectives that differ from one's own.
 
-This repository contains code for evaluating how well various LLMs can perform on ToM reasoning tasks through different testing methodologies.
+This repository provides code, datasets, and evaluation methodologies that integrate the strengths of prior benchmarks (SimToM, ToMBench) to test LLMs across diverse and cognitively demanding ToM scenarios.
 
 ## Features
 
-- Evaluate LLMs on standard ToM benchmarks including:
-- Support for different testing approaches:
+- Evaluate LLMs on standard and custom ToM benchmarks
+- Support for multiple evaluation methodologies:
   - Direct question answering
-  - Multi-stage perspective-taking pipeline
-- Flexibility to test multiple models (OpenAI, Google, Meta, Anthropic, etc.)
-- Customizable for different datasets and test formats
+  - Multi-stage perspective-taking pipelines
+- Flexible integration with various LLM APIs (OpenAI, Google, Meta, Anthropic, etc.)
+- Easily customizable for new datasets and experimental formats
 
 ## Testing Methodologies
 
 ### Direct Question Answering
 
-The simplest approach directly queries the model with the full story and question, evaluating if it can correctly choose the right option.
+A baseline approach that queries the model with the full story and question, testing for the correct multiple-choice response.
 
 ```python
 def ask(question, answer):
-    # Query model directly with full question
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
@@ -36,28 +35,31 @@ def ask(question, answer):
 
 ### Perspective-Taking Pipeline
 
-A more sophisticated approach that mimics human ToM reasoning by breaking it down into steps:
+A structured pipeline that decomposes ToM reasoning into the following stages:
 
-1. **Character Identification**: Identify the main character in the story
-2. **Perspective Filtering**: Determine what information the character has access to
-3. **Question Answering**: Answer based on the character's knowledge state
+1. **Character Identification** – Identify the main actor in the scenario
+2. **Perspective Filtering** – Infer what knowledge the character possesses
+3. **Contextual Answering** – Select the correct response based on that perspective
 
-This multi-stage approach often results in better performance on complex ToM tasks.
+This pipeline mirrors how humans approach ToM tasks and improves model accuracy on complex scenarios.
 
 ## Datasets
 
-### Standard ToM Benchmark
-- **Source**: ToMBench_release_v1_0618.xlsx
-- **Tests**: False belief, scalar implicature, emotion recognition, etc.
-- **Format**: Stories with multiple-choice questions
+### 1. Standard ToM Benchmark
 
-### Custom Evolving Stories Dataset
-- **Source**: evolving_stories_250.xlsx
-- **Format**: Scenarios with questions and multiple-choice options
+- **Source**: `ToMBench_release_v1_0618.xlsx`
+- **Tasks**: False belief, emotion recognition, scalar implicature, and more
+- **Format**: Narrative-based MCQ questions
 
-### Multi-Interaction Dataset
-- **Source**: multi_interaction_100.xlsx
-- **Format**: Scenarios involving multiple character interactions
+### 2. Custom Evolving Stories Dataset
+
+- **Source**: `evolving_stories_250.xlsx`
+- **Format**: Progressively unfolding narratives with character-based MCQs
+
+### 3. Multi-Interaction Dataset
+
+- **Source**: `multi_interaction_100.xlsx`
+- **Format**: Scenarios involving multi-turn dialogues and perspective shifts
 
 ## Usage
 
@@ -81,25 +83,25 @@ for question, answer in questions.items():
 
 ### Switching Models
 
-To test different models, modify the client initialization and API calls accordingly:
+Adjust the client configuration to use different LLMs:
 
 ```python
-# For OpenAI models
+# OpenAI
 from openai import OpenAI
 client = OpenAI()
 response = client.chat.completions.create(model="gpt-4o", ...)
 
-# For Google's Gemini
+# Google Gemini
 import google.generativeai as genai
 genai.configure(api_key="YOUR_API_KEY")
 model = genai.GenerativeModel('gemini-pro')
 response = model.generate_content(...)
 
-# For Meta's Llama (via ollama)
+# Meta Llama via Ollama
 import ollama
 response = ollama.chat(model='llama3', messages=[...])
 
-# For Anthropic's Claude
+# Anthropic Claude
 from anthropic import Anthropic
 client = Anthropic()
 response = client.messages.create(model="claude-3-opus-20240229", ...)
@@ -107,12 +109,14 @@ response = client.messages.create(model="claude-3-opus-20240229", ...)
 
 ## Results Analysis
 
-After running tests, the framework calculates and outputs:
-- Total questions tested
-- Number of correct answers
-- Accuracy percentage
+The evaluation script computes:
+
+- Total number of questions tested
+- Number of correct responses
+- Overall accuracy
 
 Example output:
+
 ```
 Total questions: 100
 Correct answers: 78
@@ -123,18 +127,43 @@ Accuracy: 78.00%
 
 ### Testing Different Tasks
 
-To test on different ToM tasks:
-1. Switch the file path to your desired dataset
-2. Adjust column references to match your data structure
-3. Modify prompts if needed for specific task types
+To test different datasets or task types:
 
-### Adding New Testing Methods
+1. Change the dataset file path
+2. Update column references (e.g., question, answer, options)
+3. Modify prompts or reasoning steps as needed
 
-The framework is designed to be extensible. New testing methodologies can be added by implementing additional functions for different approaches to ToM reasoning.
+### Extending Evaluation Strategies
+
+You can add new testing pipelines or models by creating additional functions that define:
+
+- Input formatting logic
+- Model interaction pattern
+- Evaluation and parsing criteria
 
 ## Requirements
 
 - Python 3.8+
-- pandas
-- Relevant API client libraries (openai, anthropic, etc.)
-- Access to LLM APIs
+- `pandas`
+- Model client libraries:
+  - `openai`
+  - `anthropic`
+  - `google-generativeai`
+  - `ollama` (or any wrapper for LLaMA models)
+- API keys for respective LLMs
+
+## Citation
+
+If you use UniToMBench in your research, please cite:
+
+```
+@misc{unito2025,
+  title={UniToMBench: A Unified Benchmark for Advancing Theory of Mind in Large Language Models},
+    author={Shamant},
+  year={2025},
+  note={In Submission}
+}
+```
+
+---
+
