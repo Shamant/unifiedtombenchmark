@@ -159,7 +159,7 @@ If you use UniToMBench in your research, please cite:
 ```
 @misc{unito2025,
   title={UniToMBench: A Unified Benchmark for Advancing Theory of Mind in Large Language Models},
-    author={Shamant},
+    author={Shamant Sai, Prameshwar Thiyagarajan, Vaishnavi Parimi, Soumil Garg},
   year={2025},
   note={In Submission}
 }
